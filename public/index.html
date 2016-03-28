@@ -1,0 +1,79 @@
+<!doctype html>
+
+<!-- ASSIGN OUR ANGULAR MODULE -->
+<html ng-app="scotchTodo">
+<head>
+	<!-- META -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1"><!-- Optimize mobile viewport -->
+
+	<title>Node/Angular Todo App</title>
+
+	<!-- SCROLLS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<style>
+		html 					{ overflow-y:scroll; }
+		body 					{ padding-top:50px; }
+		#todo-list 				{ margin-bottom:30px; }
+		#todo-form 	 			{ margin-bottom:50px; }
+		.badge					{ cursor: pointer; }
+	</style>
+
+	<!-- SPELLS -->
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script><!-- load angular -->
+
+	<script src="js/controllers/main.js"></script> <!-- load up our controller -->
+	<script src="js/services/todos.js"></script> <!-- load our todo service -->
+	<script src="js/core.js"></script> <!-- load our main application -->
+
+</head>
+<!-- SET THE CONTROLLER -->
+<body ng-controller="mainController">
+	<div class="container">
+		<div>The available slots are from 9 AM to 6 PM with no slot for 1PM to 2PM.
+		<span role="presentation" style="float:right"> Date & time <span class="badge">{{ time | date : 'hh:mm:ss a'}}</span></span>
+		</div>
+		<hr>
+		<div >
+			<span role="presentation"> Available Delivery Van <span class="badge">{{ van_available}}</span></span>
+			<span role="presentation" style="float:right"> Selected Items <span class="badge">{{ item_selected}} / {{limit}}</span></span>
+			<br>
+
+			<!-- FORM TO CREATE ITEMS LIST -->
+			<div id="todo-form" ng-if="duringTheDay" class="row">
+				<div class="col-sm-8 col-sm-offset-2 text-center" ng-if="van_available">
+					<form style="padding-top: 30px;">
+						<div class="form-group">
+
+							<!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
+							<input type="text" class="form-control input-lg text-center" placeholder="Item" ng-model="formData.text">
+						</div>
+
+						<!-- createData() WILL CREATE LIST OF ITEMS -->
+						<button type="submit" class="btn btn-primary btn-lg" ng-click="createData()">Add</button>
+					</form>
+				</div>
+			</div>
+			<div ng-if="duringTheDay && !van_available" class="row" align="center" style="padding:30px">
+				Wait untill delivery van gets free.
+			</div>
+			<div ng-if="!duringTheDay" class="row" align="center" style="padding:30px">
+				The available slots are from 9 AM to 6 PM with no slot for 1PM to 2PM.
+			</div>
+		</div>
+		<!-- LOOP OVER THE ITEMS IN $scope.items -->
+		<div class="col-md-12">
+			<div class="col-md-3" ng-repeat="todo in items track by $index">
+
+				<span class="badge" ng-click="deleteItem($index)">✘</span> {{ todo.text }}
+			</span>
+		</div>
+
+		<!-- Submit and launch one slot of items -->
+		<button style="float:right" ng-if="items.length == limit" class="btn btn-primary btn-lg" ng-click="launchSlot()">Submit</button>
+
+	</div>
+
+</body>
+</html>
